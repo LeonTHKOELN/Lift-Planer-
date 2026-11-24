@@ -173,8 +173,17 @@ gruppen:
     kommentar: In der Specific-Kategorie gilt die Betriebsgenehmigung
 - id: personal
   titel: Personal
-  beschreibung: Eigene Crew des Drohneneinsatzes.
+  beschreibung: Eigene Crew. Die Kalkulation auf Folie 14 rechnet ohne Personal, deshalb standardmäßig aus.
   parameter:
+  - key: personal.einrechnen
+    label: Personalkosten einrechnen
+    einheit: ja/nein
+    wert: false
+    typ: bool
+    min: 0
+    status: Annahme
+    quelle: 'Folie 14: ohne Personalkosten'
+    kommentar: ''
   - key: personal.pilot_eur_h
     label: Stundensatz Pilot
     einheit: €/h
@@ -203,16 +212,6 @@ gruppen:
     step: 1
     status: Annahme
     quelle: Platzhalter
-  - key: personal.warte_h
-    label: Bezahlte Wartezeit der Crew je Einsatztag
-    einheit: h
-    wert: 0
-    min: 0
-    max: 16
-    step: 0.5
-    status: Annahme
-    quelle: Annahme
-    kommentar: Zeit zwischen Hin- und Rücktransport, falls die Crew nicht mitarbeitet
 - id: einsatz
   titel: Aufbau und Abbau
   beschreibung: Zeiten vor Ort je Einsatztag.
@@ -235,84 +234,164 @@ gruppen:
     step: 5
     status: Annahme
     quelle: Schätzung Team
-- id: betrieb
-  titel: Drohnenbetrieb
-  beschreibung: Kosten der eigenen Drohne.
+- id: invest
+  titel: Investition FlyCart 100
+  beschreibung: Einmalige Anschaffung im Eigenbetrieb, Grundlage der Abschreibung.
   parameter:
-  - key: betrieb.abschreibung_eur_tag
-    label: Abschreibung oder Miete je Einsatztag
-    einheit: €/Tag
-    wert: 150
+  - key: kalk.invest_equipment_eur
+    label: Equipment (Drohne, Akkus, Ladetechnik, Zubehör)
+    einheit: €
+    wert: 53510
     min: 0
-    max: 5000
+    max: 500000
+    step: 100
+    status: Literaturwert
+    quelle: Excel „FlyCart100_Kalkulation“, Preise Online-Händler 13.11.2026, netto (Projekt-Review 6, Folie 14)
+    kommentar: ''
+  - key: kalk.invest_genehmigung_eur
+    label: Genehmigung und SORA
+    einheit: €
+    wert: 4023
+    min: 0
+    max: 100000
+    step: 100
+    status: Literaturwert
+    quelle: Gebühren Austro Control (Folie 14)
+    kommentar: ''
+  - key: kalk.invest_ausbildung_eur
+    label: Ausbildung Pilot
+    einheit: €
+    wert: 1810
+    min: 0
+    max: 50000
     step: 10
+    status: Literaturwert
+    quelle: Excel „FlyCart100_Kalkulation“, Preise Online-Händler 13.11.2026, netto (Projekt-Review 6, Folie 14)
+    kommentar: ''
+  - key: kalk.nutzungsdauer_j
+    label: Nutzungsdauer
+    einheit: Jahre
+    wert: 5
+    typ: int
+    min: 1
+    max: 20
+    step: 1
     status: Annahme
-    quelle: Platzhalter, aus Anschaffungspreis und Einsatztagen pro Jahr ableiten
-  - key: betrieb.versicherung_eur_tag
-    label: Versicherung je Einsatztag
-    einheit: €/Tag
+    quelle: 'Folie 14: 5 Jahre linear'
+    kommentar: ''
+- id: jahr
+  titel: Fixkosten und Auslastung
+  beschreibung: Fixkosten pro Jahr werden über die Flugminuten des Jahres auf den Einsatz verteilt.
+  parameter:
+  - key: kalk.fix_jahr_eur
+    label: Fixkosten pro Jahr ohne Abschreibung
+    einheit: €/Jahr
+    wert: 4375
+    min: 0
+    max: 100000
+    step: 50
+    status: Literaturwert
+    quelle: Excel „FlyCart100_Kalkulation“, Preise Online-Händler 13.11.2026, netto (Projekt-Review 6, Folie 14)
+    kommentar: Haftpflicht, Inspektion, Software, Auffrischungen
+  - key: kalk.auslastung_h
+    label: Flugstunden pro Jahr (Auslastung)
+    einheit: h/Jahr
+    wert: 110
+    min: 1
+    max: 2000
+    step: 5
+    status: Annahme
+    quelle: 'Folie 14: ab rund 110 h so günstig je kg wie der Helikopter'
+    kommentar: Größter Hebel, z. B. eine Drohne für mehrere Betriebe
+- id: variabel
+  titel: Variable Kosten
+  beschreibung: Kosten je Flugminute (nur Zeit in der Luft).
+  parameter:
+  - key: kalk.akku_eur_min
+    label: Akkuverschleiß
+    einheit: €/Flugminute
+    wert: 0.26
+    min: 0
+    max: 20
+    step: 0.01
+    status: Literaturwert
+    quelle: Excel „FlyCart100_Kalkulation“, Preise Online-Händler 13.11.2026, netto (Projekt-Review 6, Folie 14)
+    kommentar: ''
+  - key: kalk.laden_eur_min
+    label: Laden per Generator
+    einheit: €/Flugminute
+    wert: 0.28
+    min: 0
+    max: 20
+    step: 0.01
+    status: Literaturwert
+    quelle: Excel „FlyCart100_Kalkulation“, Preise Online-Händler 13.11.2026, netto (Projekt-Review 6, Folie 14)
+    kommentar: ''
+  - key: kalk.wartung_eur_min
+    label: Wartung inkl. Rotoren
+    einheit: €/Flugminute
+    wert: 0.25
+    min: 0
+    max: 20
+    step: 0.01
+    status: Literaturwert
+    quelle: Excel „FlyCart100_Kalkulation“, Preise Online-Händler 13.11.2026, netto (Projekt-Review 6, Folie 14)
+    kommentar: ''
+- id: akku
+  titel: Flugakkus
+  beschreibung: Wann ein Akkuwechsel nötig ist und ob das Laden mithält.
+  parameter:
+  - key: akku.flugzeit_min
+    label: Flugzeit je Akkusatz
+    einheit: min
+    wert: 14
+    min: 1
+    max: 120
+    step: 0.5
+    status: Herstellerangabe
+    quelle: 'DJI FlyCart 100 (Folie 14: 14 min Flugzeit)'
+    kommentar: Planungswert bei voller Last
+  - key: akku.reserve_pct
+    label: Landereserve
+    einheit: '%'
     wert: 20
     min: 0
-    max: 1000
+    max: 60
     step: 5
     status: Annahme
-    quelle: Platzhalter
-  - key: betrieb.wartung_eur_fh
-    label: Wartung und Verschleiß je Flugstunde
-    einheit: €/Fh
-    wert: 40
-    min: 0
-    max: 1000
-    step: 5
+    quelle: Sicherheitsreserve, mit Pilot abstimmen
+    kommentar: Wird nicht verflogen
+  - key: akku.saetze
+    label: Akkusätze vor Ort
+    einheit: Sätze
+    wert: 2
+    typ: int
+    min: 1
+    max: 10
+    step: 1
     status: Annahme
-    quelle: Platzhalter
-  - key: betrieb.akku_eur_fh
-    label: Akkualterung je Flugstunde
-    einheit: €/Fh
+    quelle: Annahme Team
+    kommentar: Ein Satz = 2 Flugakkus
+  - key: akku.ladezeit_min
+    label: Ladezeit je Akkusatz
+    einheit: min
     wert: 30
-    min: 0
-    max: 1000
+    min: 1
+    max: 600
     step: 5
     status: Annahme
-    quelle: Platzhalter, aus Akkupreis und Ladezyklen ableiten
-  - key: betrieb.strom_eur_kwh
-    label: Strompreis
-    einheit: €/kWh
-    wert: 0.3
+    quelle: Platzhalter, Ladegerät und Generator prüfen
+    kommentar: ''
+  - key: akku.wechsel_min
+    label: Dauer Akkuwechsel
+    einheit: min
+    wert: 2
     min: 0
-    max: 2
-    step: 0.01
+    max: 30
+    step: 0.5
     status: Annahme
-    quelle: Platzhalter
-  - key: drohne.energie_leer_kwh
-    label: Energie je Flugrichtung leer
-    einheit: kWh
-    wert: 0.6
-    min: 0
-    max: 20
-    step: 0.1
-    status: Annahme
-    quelle: Grobe Schätzung
-    kommentar: 'Ersetzt die bisherigen 2 kWh je Flug: leer + voll = 2 kWh'
-  - key: drohne.energie_voll_kwh
-    label: Energie je Flugrichtung bei maximaler Last
-    einheit: kWh
-    wert: 1.4
-    min: 0
-    max: 20
-    step: 0.1
-    status: Annahme
-    quelle: Grobe Schätzung
-    kommentar: Dazwischen linear nach Last am Haken
-  - key: betrieb.sonstiges_eur
-    label: Sonstige Kosten je Einsatztag
-    einheit: €
-    wert: 0
-    min: 0
-    max: 5000
-    step: 10
-    status: Annahme
-    quelle: z. B. Genehmigungsgebühren anteilig
+    quelle: Schätzung Team
+    kommentar: ''
 - id: wetter
   titel: Wetter
   beschreibung: Grenzwerte für die Flug-Ampel. Entscheidung vor Ort trifft der Pilot.
@@ -353,152 +432,3 @@ gruppen:
     step: 1
     status: Annahme
     quelle: Akkuleistung bei Kälte, Herstellerangabe prüfen
-- id: heli
-  titel: Helikopter
-  beschreibung: 'Vergleich: Außenlastflug mit Helikopter. Je Tag und Richtung ein Einsatz.'
-  parameter:
-  - key: heli.eur_min
-    label: Preis je Flugminute
-    einheit: €/min
-    wert: 30
-    min: 0
-    max: 200
-    step: 1
-    status: Annahme
-    quelle: Teamdiskussion, Bandbreite 25 bis 35 €/min, nicht validiert
-  - key: heli.nutzlast_kg
-    label: Nutzlast je Rotation
-    einheit: kg
-    wert: 750
-    min: 100
-    max: 3000
-    step: 50
-    status: Annahme
-    quelle: Teamdiskussion, Bandbreite 750 bis 1.200 kg, nicht validiert
-  - key: heli.v_kmh
-    label: Transfergeschwindigkeit Basis → Einsatzort
-    einheit: km/h
-    wert: 180
-    min: 50
-    max: 300
-    step: 10
-    status: Annahme
-    quelle: Größenordnung einmotoriger Arbeitshubschrauber, Typ offen
-    kommentar: Anflug wird aus der Luftlinie zur Basis berechnet
-  - key: heli.mindest_min
-    label: Mindestabrechnung je Einsatz
-    einheit: min
-    wert: 30
-    min: 0
-    max: 300
-    step: 5
-    status: Annahme
-    quelle: Platzhalter, beim Anbieter erfragen
-  - key: heli.bereitstellung_eur
-    label: Bereitstellung je Einsatz
-    einheit: €
-    wert: 0
-    min: 0
-    max: 5000
-    step: 10
-    status: Annahme
-    quelle: Platzhalter, beim Anbieter erfragen
-  - key: heli.rotation_min
-    label: Dauer je Rotation
-    einheit: min
-    wert: 6
-    min: 1
-    max: 60
-    step: 1
-    status: Annahme
-    quelle: Schätzung inkl. Ein- und Aushängen
-  - key: heli.kerosin_l_h
-    label: Kerosinverbrauch
-    einheit: l/h
-    wert: 170
-    min: 0
-    max: 1000
-    step: 10
-    status: Annahme
-    quelle: Größenordnung einmotoriger Arbeitshubschrauber, Typ offen
-- id: manuell
-  titel: Manueller Transport
-  beschreibung: Tragen durch das Team als Vergleichsverfahren.
-  parameter:
-  - key: manuell.traglast_kg
-    label: Traglast je Person
-    einheit: kg
-    wert: 20
-    min: 5
-    max: 50
-    step: 1
-    status: Annahme
-    quelle: Planungswert für steiles Gelände, ergonomisch prüfen
-  - key: manuell.v_horizontal_kmh
-    label: Gehgeschwindigkeit horizontal
-    einheit: km/h
-    wert: 4
-    min: 1
-    max: 8
-    step: 0.5
-    status: Literaturwert
-    quelle: DIN 33466 Wanderzeitberechnung (4 km/h)
-  - key: manuell.aufstieg_hm_h
-    label: Aufstieg
-    einheit: Hm/h
-    wert: 300
-    min: 50
-    max: 1000
-    step: 10
-    status: Literaturwert
-    quelle: DIN 33466 Wanderzeitberechnung (300 Hm/h)
-  - key: manuell.abstieg_hm_h
-    label: Abstieg
-    einheit: Hm/h
-    wert: 500
-    min: 50
-    max: 2000
-    step: 10
-    status: Literaturwert
-    quelle: DIN 33466 Wanderzeitberechnung (500 Hm/h)
-  - key: manuell.lastfaktor
-    label: Zeitaufschlag beim Tragen mit Last
-    einheit: ×
-    wert: 1.3
-    min: 1
-    max: 3
-    step: 0.05
-    status: Annahme
-    quelle: DIN-Werte gelten ohne schwere Last; Aufschlag mit Felddaten Montafon validieren
-    kommentar: Gilt nur für den Weg mit Last
-  - key: manuell.stundensatz_eur_h
-    label: Stundensatz Arbeitskraft
-    einheit: €/h
-    wert: 35
-    min: 0
-    max: 200
-    step: 1
-    status: Annahme
-    quelle: Platzhalter, regionale Lohnkosten prüfen
-- id: co2
-  titel: CO₂-Faktoren
-  beschreibung: Emissionsfaktoren für den Vergleich.
-  parameter:
-  - key: co2.strom_kg_kwh
-    label: Strommix
-    einheit: kg CO₂/kWh
-    wert: 0.1
-    min: 0
-    max: 1.5
-    step: 0.01
-    status: Annahme
-    quelle: Niedriger Faktor für österreichischen Strommix, Quelle ergänzen
-  - key: co2.kerosin_kg_l
-    label: Kerosin
-    einheit: kg CO₂/l
-    wert: 2.52
-    min: 0
-    max: 5
-    step: 0.01
-    status: Literaturwert
-    quelle: 3,16 kg CO₂ je kg Jet-A1 × Dichte ca. 0,8 kg/l

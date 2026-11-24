@@ -57,8 +57,6 @@ def test_leerflug_und_bodenzeit():
     assert a["richtung"]["runter"]["haken"] == 0 and not a["richtung"]["runter"]["beladen"]
     assert math.isclose(a["boden_min"], P["flug.umlauf_min"] + P["flug.lastwechsel_min"])
     assert math.isclose(b["boden_min"], P["flug.umlauf_min"] + 2 * P["flug.lastwechsel_min"])
-    assert math.isclose(a["richtung"]["runter"]["kwh"], P["drohne.energie_leer_kwh"])
-    assert b["kwh"] > a["kwh"]
 
 
 def test_packen_vorlagen():
@@ -73,20 +71,42 @@ def test_packen_vorlagen():
             assert not any(s == "fehler" for s, _ in flm.pruefen(last, P))
 
 
-def test_kosten_eigenbetrieb():
+def test_kosten_eigenbetrieb_folie14():
+    from core import akku
+    # Folie 14: 59.343 € Investition, 16.244 € Fix mit Abschreibung, 0,79 €/min variabel
+    assert math.isclose(kosten.investition(P), 59343)
+    ohne, mit = kosten.satz_je_min(P, 107)
+    assert math.isclose(mit, 0.79 + 16243.6 / (107 * 60), rel_tol=1e-6)
+    assert abs(mit - 3.33) < 0.02  # Zielkosten Heli laut Folie bei 107 h
     prof = _prof()
     ms = katalog.position(KAT["motorsaege_ms_261_c_m"], 1)
     fl, _ = flm.auswerten([_flug("hoch", hoch=[ms]), _flug("runter", runter=[ms], tag=2)], prof, P)
-    d = kosten.eigenbetrieb(fl, P)
-    assert d["tage"] == 2 and d["fluege"] == 2
-    assert math.isclose(d["Kosten (€)"], d["fix"] + d["variabel"])
-    fix_tag = P["betrieb.abschreibung_eur_tag"] + P["betrieb.versicherung_eur_tag"] + P["betrieb.sonstiges_eur"]
-    ruest = (P["einsatz.aufbau_min"] + P["einsatz.abbau_min"]) / 60 * kosten.crew_satz(P)
-    assert math.isclose(d["fix"], 2 * (fix_tag + ruest))
+    ak = akku.plan(fl, P)
+    k = kosten.eigenbetrieb(fl, ak, P)
+    luft = sum(f["flug_min"] for f in fl)
+    assert math.isclose(k["ohne"], luft * kosten.satz_je_min(P)[0])
+    assert math.isclose(k["mit"], luft * kosten.satz_je_min(P)[1])
+    assert k["personal"] == 0  # standardmäßig ohne Personal
 
 
-def test_heli_je_einsatz():
-    h = kosten.heli([{"name": "a", "kg": 100}, {"name": "b", "kg": 0}], P, {"name": "x", "km": 30})
-    assert h["einsaetze"] == 1
-    assert math.isclose(h["Kosten (€)"], max(60 / P["heli.v_kmh"] * 60 + P["heli.rotation_min"], P["heli.mindest_min"])
-                        * P["heli.eur_min"] + P["heli.bereitstellung_eur"])
+def test_akkuwechsel():
+    from core import akku
+    prof = _prof()
+    ms = katalog.position(KAT["motorsaege_ms_261_c_m"], 1)
+    fl, _ = flm.auswerten([_flug("hoch", hoch=[ms]) for _ in range(6)], prof, P)
+    nutz = P["akku.flugzeit_min"] * (1 - P["akku.reserve_pct"] / 100)
+    je_satz = int(nutz // fl[0]["flug_min"])
+    ak = akku.plan(fl, P)
+    assert ak["wechsel"] == math.ceil(6 / je_satz) - 1
+    assert ak["je_flug"][je_satz]["wechsel_danach"]
+    p2 = dict(P, **{"akku.saetze": 1, "akku.ladezeit_min": 60})
+    assert akku.plan(fl, p2)["warte_min"] > 0  # ein Satz: Warten aufs Laden
+
+
+def test_packen_nur_verfuegbare_behaelter():
+    pos = [katalog.position(KAT["freischneider_fs_461_c_em"], 1), katalog.position(KAT["akku_ap_300_0_pc"], 3)]
+    ohne_netz = flm.packen(pos, P, ["grund"])
+    assert all(x["behaelter"] == "grund" for x in ohne_netz)
+    mit = flm.packen(pos, P, ["grund", "kassette", "netz"])
+    behs = {x["behaelter"] for x in mit}
+    assert "netz" in behs and "kassette" in behs

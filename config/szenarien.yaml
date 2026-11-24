@@ -16,24 +16,19 @@ szenarien:
 
   - id: konservativ
     name: Konservativ
-    beschreibung: Langsamere Drohne, längere Bodenzeiten, höhere Betriebskosten, günstiger Helikopter
+    beschreibung: Geringe Auslastung, kürzere Akkuflugzeit, längere Bodenzeiten
     werte:
-      drohne.v_reise_ms: 8
-      drohne.steigrate_ms: 2.5
+      kalk.auslastung_h: 50
+      akku.flugzeit_min: 11
       flug.umlauf_min: 4
       flug.lastwechsel_min: 4
-      einsatz.aufbau_min: 60
-      betrieb.abschreibung_eur_tag: 220
-      betrieb.wartung_eur_fh: 60
-      heli.eur_min: 25
+      drohne.v_reise_ms: 8
 
   - id: optimistisch
     name: Optimistisch
-    beschreibung: Eingespieltes Team, hohe Auslastung der Drohne über das Jahr
+    beschreibung: Eine Drohne für mehrere Betriebe, eingespieltes Team
     werte:
+      kalk.auslastung_h: 250
+      akku.saetze: 3
       flug.umlauf_min: 2
       flug.lastwechsel_min: 2
-      einsatz.aufbau_min: 30
-      einsatz.abbau_min: 20
-      betrieb.abschreibung_eur_tag: 100
-      heli.eur_min: 35

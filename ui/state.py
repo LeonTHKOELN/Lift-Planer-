@@ -13,14 +13,17 @@ import uuid
 import streamlit as st
 
 from core import fluege as flm
-from core import geo, hoehe, katalog, kosten, profil, wetter
+from core import akku, geo, hoehe, katalog, kosten, profil, wetter
 from core import params as registry
 from core.fmt import de
 
 S = st.session_state
 
 PLAN_PAGES = [  # Reihenfolge der Planungsschritte (Stepper und Weiter/Zurück)
-    ("views/einsatz.py", "Einsatz & Route"),
+    ("views/einsatz.py", "Einsatz"),
+    ("views/flugweg.py", "Flugweg"),
+    ("views/wetter.py", "Wetter"),
+    ("views/ausruestung.py", "Ausrüstung"),
     ("views/flugplan.py", "Flugplanung"),
     ("views/kosten.py", "Kosten"),
 ]
@@ -32,10 +35,8 @@ JOB_DEFAULTS = {
     "w_start_lat": 47.031639, "w_start_lon": 9.991611, "w_start_alt": 1000,
     "w_ziel_lat": 47.029139, "w_ziel_lon": 9.996583, "w_ziel_alt": 1200,
     "w_alt_manual": False, "w_start_paste": "", "w_ziel_paste": "",
-    "w_team": 2,
 }
 EXPORT_JOB_KEYS = [k for k in JOB_DEFAULTS if not k.endswith("_paste")]
-HELI_DATEI = katalog.DATA / "heli_basen.csv"
 STANDORT_DATEI = katalog.DATA / "standorte.csv"
 
 
@@ -47,20 +48,18 @@ def _stand(*pfade):
 @st.cache_resource
 def load_config(stand):  # stand wird gehasht: neue Dateien im Repo → neu laden
     params, gruppen = registry.load_registry()
-    with open(HELI_DATEI, encoding="utf-8") as f:
-        basen = [dict(r, lat=float(r["lat"]), lon=float(r["lon"])) for r in csv.DictReader(f)]
     with open(STANDORT_DATEI, encoding="utf-8") as f:
         orte = [dict(r, **{k: float(r[k]) for k in ("start_lat", "start_lon", "ziel_lat", "ziel_lon")})
                 for r in csv.DictReader(f)]
-    return params, gruppen, registry.load_scenarios(), katalog.load(), katalog.load_vorlagen(), basen, orte
+    return params, gruppen, registry.load_scenarios(), katalog.load(), katalog.load_vorlagen(), orte
 
 
 def refresh_config():
     """Konfiguration aktuell halten (wird bei jedem Seitenaufruf in init() aufgerufen)."""
-    global REG, GRUPPEN, SZENARIEN, KATALOG, VORLAGEN, HELI_BASEN, STANDORTE
-    REG, GRUPPEN, SZENARIEN, KATALOG, VORLAGEN, HELI_BASEN, STANDORTE = load_config(_stand(
+    global REG, GRUPPEN, SZENARIEN, KATALOG, VORLAGEN, STANDORTE
+    REG, GRUPPEN, SZENARIEN, KATALOG, VORLAGEN, STANDORTE = load_config(_stand(
         registry.CONFIG / "parameter.yaml", registry.CONFIG / "szenarien.yaml", katalog.KATALOG, katalog.VORLAGEN,
-        HELI_DATEI, STANDORT_DATEI))
+        STANDORT_DATEI))
 
 
 refresh_config()
@@ -84,9 +83,9 @@ def init():
     S.setdefault("ed_ver", 0)
     S.setdefault("pin_mode", "Landeplatz")
     S.setdefault("sel_standort", STANDORTE[0]["name"] if STANDORTE else None)
-    if "fluege" not in S:
-        S.fluege = []
-        vorlage_laden("S1", runter=True, ersetzen=True)
+    if "warenkorb" not in S:
+        S.warenkorb, S.eigene, S.behaelter_ok, S.rueck = {}, [], ["grund", "kassette", "netz"], True
+        vorlage_laden("S1", ersetzen=True)
     # Widget-Werte über Seitenwechsel erhalten (Streamlit löscht sonst Werte nicht angezeigter Widgets)
     for k in [k for k in S.keys() if str(k).startswith("w_")]:
         S[k] = S[k]
@@ -106,7 +105,7 @@ def standort_laden():
     S.w_start_lat, S.w_start_lon, S.w_ziel_lat, S.w_ziel_lon = o["start_lat"], o["start_lon"], o["ziel_lat"], o["ziel_lon"]
     S.w_alt_manual = False
     if o.get("vorlage") and S.get("standort_vorlage", True):
-        vorlage_laden(o["vorlage"], runter=True, ersetzen=True)
+        vorlage_laden(o["vorlage"], ersetzen=True)
     S.standort_msg = f"Standardeinsatz „{o['name']}“ geladen."
 
 
@@ -150,26 +149,86 @@ def flug(fid):
     return next(f for f in S.fluege if f["id"] == fid)
 
 
-def vorlage_laden(vid, runter=True, ersetzen=True, tag=1):
-    """Tagesladung einer Vorlage auf Flüge verteilen. runter: am Ende dieselbe Last wieder ins Tal."""
+# ---------------------------------------------------------------------------
+# Warenkorb (Seite Ausrüstung) → Flugplan
+# ---------------------------------------------------------------------------
+def vorlage_laden(vid, ersetzen=True):
+    """Tagesladung einer Vorlage in den Warenkorb legen."""
     v = next(x for x in VORLAGEN if x["id"] == vid)
-    pos = [katalog.position(KATALOG[x["artikel"]], x["menge"]) for x in v["positionen"]]
+    if ersetzen:
+        S.warenkorb, S.eigene = {}, []
+    for x in v["positionen"]:
+        S.warenkorb[x["artikel"]] = S.warenkorb.get(x["artikel"], 0) + x["menge"]
+    S.vorlage_msg = f"Vorlage {v['name']} im Warenkorb."
+    fluege_erzeugen()
+
+
+def korb_aendern(aid, delta):
+    n = round(S.warenkorb.get(aid, 0) + delta, 3)
+    if n > 0:
+        S.warenkorb[aid] = n
+    else:
+        S.warenkorb.pop(aid, None)
+    fluege_erzeugen()
+
+
+def behaelter_umschalten(b):
+    ok = list(S.behaelter_ok)
+    S.behaelter_ok = [x for x in ok if x != b] if b in ok else ok + [b]
+    fluege_erzeugen()
+
+
+def eigene_hinzufuegen():
+    name = (S.get("eig_name") or "").strip() or "Eigene Position"
+    S.eigene.append({"name": name, "kg": float(S.get("eig_kg", 0.0)), "menge": float(S.get("eig_n", 1)),
+                     "gg": S.get("eig_gg", ""), "richtung": S.get("eig_richtung", "hoch")})
+    S.eig_name = ""
+    fluege_erzeugen()
+
+
+def eigene_loeschen(i):
+    S.eigene.pop(i)
+    fluege_erzeugen()
+
+
+def korb_leeren():
+    S.warenkorb, S.eigene = {}, []
+    fluege_erzeugen()
+
+
+def korb_positionen():
+    """Warenkorb als Ladepositionen, getrennt nach Richtung."""
+    hoch = [katalog.position(KATALOG[a], m) for a, m in S.warenkorb.items() if a in KATALOG]
+    runter_nur = []
+    for e in S.eigene:
+        pos = katalog.freie_position(e["name"], e["kg"], e["menge"], e["gg"])
+        (runter_nur if e["richtung"] == "runter" else hoch).append(pos)
+    return hoch, runter_nur
+
+
+def fluege_erzeugen():
+    """Flugplan aus dem Warenkorb: Ladung hoch auf Flüge verteilen, bei Rücktransport dieselbe Last wieder
+    runter. Eigene Positionen „nur runter“ (z. B. Heusäcke) als eigene Flüge runter."""
     p = params()
-    lasten = flm.packen(pos, p)
+    hoch, runter_nur = korb_positionen()
+    erlaubt = S.behaelter_ok or ["ohne"]
+    lasten_hoch = flm.packen(hoch, p, erlaubt) if hoch else []
     neu = []
-    for last in lasten:
-        f = neuer_flug(tag, "hoch")
+    for last in lasten_hoch:
+        f = neuer_flug(1, "hoch")
         f["hoch"] = copy.deepcopy(last)
         neu.append(f)
-    if runter:
-        for last in lasten:
-            f = neuer_flug(tag, "runter")
+    if S.rueck:
+        for last in lasten_hoch:
+            f = neuer_flug(1, "runter")
             f["runter"] = copy.deepcopy(last)
             neu.append(f)
-    S.fluege = neu if ersetzen else S.fluege + neu
+    for last in (flm.packen(runter_nur, p, erlaubt) if runter_nur else []):
+        f = neuer_flug(1, "runter")
+        f["runter"] = copy.deepcopy(last)
+        neu.append(f)
+    S.fluege = neu
     S.offen = None
-    S.vorlage_msg = (f"Vorlage {v['name']}: {len(lasten)} Flug/Flüge hoch"
-                     + (f" und {len(lasten)} runter" if runter else "") + ".")
 
 
 def alle_loeschen():
@@ -208,7 +267,7 @@ def changed_keys() -> list:
 
 def job() -> dict:
     return {"einsatz": S.w_einsatz, "start_name": S.w_start_name,
-            "start": (S.w_start_lat, S.w_start_lon), "ziel": (S.w_ziel_lat, S.w_ziel_lon), "team": int(S.w_team)}
+            "start": (S.w_start_lat, S.w_start_lon), "ziel": (S.w_ziel_lat, S.w_ziel_lon)}
 
 
 def build_profile(p, j):
@@ -227,35 +286,19 @@ def build_profile(p, j):
     return profil.build_profile(j["start"], j["ziel"], dist, pts, ds, step_eff, terrain, source, real, error, p)
 
 
-def heli_basis(landeplatz):
-    basen = [{"name": b["name"], "km": geo.haversine_m(b["lat"], b["lon"], *landeplatz) / 1000} for b in HELI_BASEN]
-    return min(basen, key=lambda b: b["km"]) if basen else {"name": "keine Basis hinterlegt", "km": 0.0}
-
-
 def result():
     """Komplette Rechnung für den aktuellen Stand. Wird auf jeder Seite vor den Widgets aufgerufen."""
     p, j = params(), job()
     prof = build_profile(p, j)
     fl, tr_fl = flm.auswerten(S.fluege, prof, p)
-    drohne = kosten.eigenbetrieb(fl, p)
-
-    # Vergleich: dieselbe Fracht je Einsatztag und Richtung
-    lasten = {}
-    for f in fl:
-        for d in ("hoch", "runter"):
-            lasten[(f["tag"], d)] = lasten.get((f["tag"], d), 0.0) + f["richtung"][d]["ladung"]
-    basis = heli_basis(j["start"])
-    he = kosten.heli([{"name": f"Tag {t} {flm.RICHTUNGEN[d]}", "kg": kg} for (t, d), kg in sorted(lasten.items())],
-                     p, basis)
-    laeufe = [{"name": f"Tag {t} {flm.RICHTUNGEN[d]}", "kg": kg, "traglast": p["manuell.traglast_kg"],
-               "richtung": d, "anzahl": 1} for (t, d), kg in sorted(lasten.items()) if kg > 0]
-    ma = kosten.manuell(prof, p, j["team"], laeufe)
-    kg_hoch = sum(kg for (_, d), kg in lasten.items() if d == "hoch")
-    kg_runter = sum(kg for (_, d), kg in lasten.items() if d == "runter")
-    return {"P": prof, "p": p, "job": j, "fl": fl, "drohne": drohne, "heli": he, "manuell": ma,
-            "heli_basis": basis, "kg_hoch": kg_hoch, "kg_runter": kg_runter, "usecase": "Forst",
-            "has_dg": any(f["gefahrgut"] for f in fl), "fehler": [f["nr"] for f in fl if f["fehler"]],
-            "traces": [prof["trace"], tr_fl, drohne["trace"], he["trace"], ma["trace"]]}
+    ak = akku.plan(fl, p)
+    ko = kosten.eigenbetrieb(fl, ak, p)
+    kg_hoch = sum(f["richtung"]["hoch"]["ladung"] for f in fl)
+    kg_runter = sum(f["richtung"]["runter"]["ladung"] for f in fl)
+    return {"P": prof, "p": p, "job": j, "fl": fl, "akku": ak, "kosten": ko, "kg_hoch": kg_hoch,
+            "kg_runter": kg_runter, "usecase": "Forst", "has_dg": any(f["gefahrgut"] for f in fl),
+            "fehler": [f["nr"] for f in fl if f["fehler"]],
+            "traces": [prof["trace"], tr_fl, ak["trace"], ko["trace"]]}
 
 
 # ---------- Koordinaten einfügen ----------

@@ -82,6 +82,8 @@ def export_json(with_job):
     if with_job:
         data["auftrag"] = {k: S[k] for k in state.EXPORT_JOB_KEYS}
         data["fluege"] = S.fluege
+        data["warenkorb"] = {"artikel": S.warenkorb, "eigene": S.eigene, "behaelter": S.behaelter_ok,
+                             "rueck": S.rueck}
     return json.dumps(data, ensure_ascii=False, indent=2)
 
 
@@ -111,6 +113,10 @@ def do_import():
         for k, v in (data.get("auftrag") or {}).items():
             if k in state.JOB_DEFAULTS:
                 S[k] = v
+        wk = data.get("warenkorb") or {}
+        if wk:
+            S.warenkorb, S.eigene = dict(wk.get("artikel") or {}), list(wk.get("eigene") or [])
+            S.behaelter_ok, S.rueck = list(wk.get("behaelter") or []), bool(wk.get("rueck", True))
         if isinstance(data.get("fluege"), list):
             S.fluege = data["fluege"]
         S.szenario = data.get("szenario") or "Import"
@@ -222,7 +228,7 @@ with tab_r:
         rows = [("Landeplatz", f"{j['start'][0]:.5f}, {j['start'][1]:.5f} · {de(P['start_alt'])} m"),
                 ("Einsatzort", f"{j['ziel'][0]:.5f}, {j['ziel'][1]:.5f} · {de(P['ziel_alt'])} m"),
                 ("Flugplan", f"{len(R['fl'])} Flüge · {de(R['kg_hoch'], 1)} kg hoch · {de(R['kg_runter'], 1)} kg runter"),
-                ("Team", f"{j['team']} Personen (Vergleich Tragen)"), ("Höhenquelle", P["source"])]
+                ("Höhenquelle", P["source"])]
         st.markdown("<table class='lp-calc'><tbody>" + "".join(
             f"<tr><td style='width:20%'><b>{a}</b></td><td>{b}</td></tr>" for a, b in rows) + "</tbody></table>",
                     unsafe_allow_html=True)

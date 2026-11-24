@@ -4,21 +4,22 @@ Streamlit-App (TH Köln × STIHL, Projekt „Arbeiten in Steillagen“): Lastpla
 **eigenen** Lastendrohne, verglichen mit Helikopter und Tragen.
 
 ## Seiten
-1. **Einsatz & Route**: Standardeinsatz wählen (Forstwirtschaft St. Gallenkirch, Lawinenverbauung,
-   Heuernte Bartholomäberg) oder Pins auf der Karte setzen. Höhenprofil alle 30 m, Flugzeit, Wetter.
-2. **Flugplanung**: Flüge hinzufügen, je Flug „Hin beladen · Rück leer“, „Hin leer · Rück beladen“ oder beides.
-   Last aus dem Gerätekatalog oder als freie Position, Grenze 70 kg am Haken (Ladung + Behälter).
-   Prüft Lastgrenze, Kraftstoff (Kl. 3) mit losen Akkus (Kl. 9) und Langgut. Vorlagen S1 bis S5 verteilen
-   eine Tagesladung automatisch auf Flüge.
-3. **Kosten**: je Flug (Flugzeit, Energie) und je Einsatztag (Drohne fix, Aufbau, Abbau), € je kg,
-   Vergleich mit Helikopter und Tragen.
+1. **Einsatz**: Standardeinsatz (Forstwirtschaft St. Gallenkirch, Lawinenverbauung, Heuernte Bartholomäberg)
+   oder Pins auf der Karte.
+2. **Flugweg**: Höhenprofil alle 30 m, geplante Flughöhe, Flugzeit.
+3. **Wetter**: Flug-Ampel der nächsten Tage, stündliche Werte.
+4. **Ausrüstung**: alle Artikel wie im Onlineshop nach Kategorien, inkl. Behälter und eigener Positionen
+   (z. B. Heusäcke nur runter). Der Warenkorb wird automatisch auf Flüge bis 70 kg am Haken verteilt.
+5. **Flugplanung**: erzeugte Flüge prüfen und anpassen, Lastbalken, Gefahrgut- und Langgut-Hinweise,
+   Akkusatz und Akkuwechsel je Flug.
+6. **Kosten**: Eigenbetrieb nach Kalkulation FlyCart 100 (Projekt-Review 6, Folie 14), ohne und mit
+   Abschreibung, je Flugminute nach Auslastung, Akkuwechsel und Laden.
 
-Einstellungen: **Annahmen & Parameter** (alle Werte mit Quelle, Rechenweg, Szenarien) und **Gerätekatalog**.
+Gerätefotos: `assets/geraete/<id>.jpg` (siehe README dort).
 
 ## Daten
 - `data/katalog.csv`, `data/vorlagen.yaml`: aus *Transportbox_Sprint5-6_v4.xlsx*, Blatt Transportszenarien
 - `data/standorte.csv`: Standardeinsätze
-- `data/heli_basen.csv`: Heli-Basis für den Vergleich
 - `config/parameter.yaml`, `config/szenarien.yaml`: alle Rechenwerte
 
 ## Start
