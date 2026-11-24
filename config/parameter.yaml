@@ -1,0 +1,504 @@
+# ---------------------------------------------------------------------------
+# Lift Planner Eigenbetrieb · zentrale Parameter
+#
+# Jede Rechnung der App liest ihre Werte ausschließlich aus dieser Datei
+# (bzw. aus den in der App geänderten Werten). Neue Variable = neuer Eintrag.
+#
+# Felder je Parameter:
+#   key        eindeutiger Name, wird im Code verwendet
+#   label      Anzeigename
+#   einheit    Einheit für Anzeige und Rechenweg
+#   wert       Basiswert
+#   min/max    zulässiger Bereich (Eingaben werden darauf begrenzt)
+#   step       Schrittweite im Eingabefeld
+#   typ        float (Standard), int oder bool
+#   status     Annahme | Literaturwert | Herstellerangabe | Regelwerk | Validiert
+#   quelle     Herkunft des Wertes
+#   kommentar  optionale Erläuterung
+# ---------------------------------------------------------------------------
+
+gruppen:
+- id: drohne
+  titel: Drohne
+  beschreibung: Leistungsdaten der eigenen Lastendrohne.
+  parameter:
+  - key: drohne.nutzlast_kg
+    label: Maximale Last am Haken je Flug
+    einheit: kg
+    wert: 70
+    min: 5
+    max: 500
+    step: 5
+    status: Annahme
+    quelle: Vorgabe Team (Eigenbetrieb)
+    kommentar: Ladung plus Behälter. Grenze für die Lastplanung je Flug
+  - key: drohne.v_reise_ms
+    label: Reisegeschwindigkeit
+    einheit: m/s
+    wert: 10
+    min: 1
+    max: 30
+    step: 0.5
+    status: Annahme
+    quelle: Planungswert mit Außenlast
+  - key: drohne.steigrate_ms
+    label: Steigrate
+    einheit: m/s
+    wert: 3
+    min: 0.5
+    max: 10
+    step: 0.5
+    status: Annahme
+    quelle: Planungswert mit Außenlast
+  - key: drohne.sinkrate_ms
+    label: Sinkrate
+    einheit: m/s
+    wert: 3
+    min: 0.5
+    max: 10
+    step: 0.5
+    status: Annahme
+    quelle: Planungswert mit Außenlast
+- id: flugbetrieb
+  titel: Flugbetrieb
+  beschreibung: Zeiten am Boden je Flug.
+  parameter:
+  - key: flug.umlauf_min
+    label: Bodenzeit je Umlauf
+    einheit: min
+    wert: 3
+    min: 0
+    max: 30
+    step: 0.5
+    status: Annahme
+    quelle: Schätzung Team
+    kommentar: Akkuwechsel, Sichtprüfung, Startfreigabe. Fällt bei jedem Flug an, auch leer
+  - key: flug.lastwechsel_min
+    label: An- und Abhängen je beladener Richtung
+    einheit: min
+    wert: 3
+    min: 0
+    max: 30
+    step: 0.5
+    status: Annahme
+    quelle: Schätzung Team
+    kommentar: Last am Start anhängen und am Ziel lösen. Bisher 6 min je Flug mit einer beladenen Richtung
+- id: behaelter
+  titel: Behälter
+  beschreibung: Eigengewicht der Transportbehälter. Zählt zur Last am Haken.
+  parameter:
+  - key: box.grund_kg
+    label: Grundbox
+    einheit: kg
+    wert: 5.04
+    min: 0
+    max: 30
+    step: 0.1
+    status: Annahme
+    quelle: Transportbox Sprint 5-6, Blatt Gewichtsschätzung Box
+    kommentar: Schätzung, durch Wiegen bestätigen
+  - key: box.kassette_kg
+    label: Grundbox mit Akku-Kassette
+    einheit: kg
+    wert: 7.59
+    min: 0
+    max: 30
+    step: 0.1
+    status: Annahme
+    quelle: Transportbox Sprint 5-6, Blatt Gewichtsschätzung Box
+    kommentar: Für lose Ersatzakkus (UN 3480)
+  - key: box.ring_kg
+    label: Grundbox mit 3. Aufsatzring
+    einheit: kg
+    wert: 5.64
+    min: 0
+    max: 30
+    step: 0.1
+    status: Annahme
+    quelle: Transportbox Sprint 5-6, Blatt Gewichtsschätzung Box
+    kommentar: Mehr Innenhöhe, z. B. für Rückengeräte
+  - key: box.netz_kg
+    label: Lastnetz für Langgut
+    einheit: kg
+    wert: 2.0
+    min: 0
+    max: 20
+    step: 0.1
+    status: Annahme
+    quelle: Platzhalter
+    kommentar: Für Teile, die nicht in die Box passen
+  - key: box.innenlaenge_mm
+    label: Innenlänge Box
+    einheit: mm
+    wert: 630
+    typ: int
+    min: 100
+    max: 3000
+    step: 10
+    status: Annahme
+    quelle: Transportbox Sprint 5-6, Blatt Gewichtsschätzung Box
+    kommentar: Längere Teile gelten als Langgut
+- id: profil
+  titel: Flugprofil
+  beschreibung: Raster der Höhenabfrage und zulässiger Höhenkorridor über Grund.
+  parameter:
+  - key: profil.raster_m
+    label: Rasterabstand Höhenabfrage
+    einheit: m
+    wert: 30
+    typ: int
+    min: 10
+    max: 500
+    step: 10
+    status: Annahme
+    quelle: Passend zur Auflösung EU-DEM (25 m)
+  - key: profil.min_agl_m
+    label: Mindestabstand über Grund
+    einheit: m
+    wert: 30
+    min: 5
+    max: 150
+    step: 5
+    status: Annahme
+    quelle: Sicherheitsabstand zu Bäumen und Hindernissen, mit Pilot abstimmen
+  - key: profil.max_agl_m
+    label: Maximale Höhe über Grund
+    einheit: m
+    wert: 120
+    min: 20
+    max: 300
+    step: 10
+    status: Regelwerk
+    quelle: VO (EU) 2019/947, Grenze der Open-Kategorie
+    kommentar: In der Specific-Kategorie gilt die Betriebsgenehmigung
+- id: personal
+  titel: Personal
+  beschreibung: Eigene Crew des Drohneneinsatzes.
+  parameter:
+  - key: personal.pilot_eur_h
+    label: Stundensatz Pilot
+    einheit: €/h
+    wert: 35
+    min: 0
+    max: 300
+    step: 1
+    status: Annahme
+    quelle: Beispielwert aus dem Projektdokument
+  - key: personal.helfer_n
+    label: Helfer zusätzlich zum Pilot
+    einheit: Personen
+    typ: int
+    wert: 1
+    min: 0
+    max: 10
+    step: 1
+    status: Annahme
+    quelle: Einweiser am Lastaufnahmepunkt
+  - key: personal.helfer_eur_h
+    label: Stundensatz Helfer
+    einheit: €/h
+    wert: 30
+    min: 0
+    max: 300
+    step: 1
+    status: Annahme
+    quelle: Platzhalter
+  - key: personal.warte_h
+    label: Bezahlte Wartezeit der Crew je Einsatztag
+    einheit: h
+    wert: 0
+    min: 0
+    max: 16
+    step: 0.5
+    status: Annahme
+    quelle: Annahme
+    kommentar: Zeit zwischen Hin- und Rücktransport, falls die Crew nicht mitarbeitet
+- id: einsatz
+  titel: Aufbau und Abbau
+  beschreibung: Zeiten vor Ort je Einsatztag.
+  parameter:
+  - key: einsatz.aufbau_min
+    label: Aufbau und Inbetriebnahme
+    einheit: min
+    wert: 45
+    min: 0
+    max: 300
+    step: 5
+    status: Annahme
+    quelle: Schätzung Team
+  - key: einsatz.abbau_min
+    label: Abbau
+    einheit: min
+    wert: 30
+    min: 0
+    max: 300
+    step: 5
+    status: Annahme
+    quelle: Schätzung Team
+- id: betrieb
+  titel: Drohnenbetrieb
+  beschreibung: Kosten der eigenen Drohne.
+  parameter:
+  - key: betrieb.abschreibung_eur_tag
+    label: Abschreibung oder Miete je Einsatztag
+    einheit: €/Tag
+    wert: 150
+    min: 0
+    max: 5000
+    step: 10
+    status: Annahme
+    quelle: Platzhalter, aus Anschaffungspreis und Einsatztagen pro Jahr ableiten
+  - key: betrieb.versicherung_eur_tag
+    label: Versicherung je Einsatztag
+    einheit: €/Tag
+    wert: 20
+    min: 0
+    max: 1000
+    step: 5
+    status: Annahme
+    quelle: Platzhalter
+  - key: betrieb.wartung_eur_fh
+    label: Wartung und Verschleiß je Flugstunde
+    einheit: €/Fh
+    wert: 40
+    min: 0
+    max: 1000
+    step: 5
+    status: Annahme
+    quelle: Platzhalter
+  - key: betrieb.akku_eur_fh
+    label: Akkualterung je Flugstunde
+    einheit: €/Fh
+    wert: 30
+    min: 0
+    max: 1000
+    step: 5
+    status: Annahme
+    quelle: Platzhalter, aus Akkupreis und Ladezyklen ableiten
+  - key: betrieb.strom_eur_kwh
+    label: Strompreis
+    einheit: €/kWh
+    wert: 0.3
+    min: 0
+    max: 2
+    step: 0.01
+    status: Annahme
+    quelle: Platzhalter
+  - key: drohne.energie_leer_kwh
+    label: Energie je Flugrichtung leer
+    einheit: kWh
+    wert: 0.6
+    min: 0
+    max: 20
+    step: 0.1
+    status: Annahme
+    quelle: Grobe Schätzung
+    kommentar: 'Ersetzt die bisherigen 2 kWh je Flug: leer + voll = 2 kWh'
+  - key: drohne.energie_voll_kwh
+    label: Energie je Flugrichtung bei maximaler Last
+    einheit: kWh
+    wert: 1.4
+    min: 0
+    max: 20
+    step: 0.1
+    status: Annahme
+    quelle: Grobe Schätzung
+    kommentar: Dazwischen linear nach Last am Haken
+  - key: betrieb.sonstiges_eur
+    label: Sonstige Kosten je Einsatztag
+    einheit: €
+    wert: 0
+    min: 0
+    max: 5000
+    step: 10
+    status: Annahme
+    quelle: z. B. Genehmigungsgebühren anteilig
+- id: wetter
+  titel: Wetter
+  beschreibung: Grenzwerte für die Flug-Ampel. Entscheidung vor Ort trifft der Pilot.
+  parameter:
+  - key: wetter.wind_max_ms
+    label: Maximaler Wind in Flughöhe
+    einheit: m/s
+    wert: 10
+    min: 2
+    max: 30
+    step: 0.5
+    status: Annahme
+    quelle: Vorsichtiger Planungswert mit Außenlast, Herstellerangabe der Drohne prüfen
+  - key: wetter.boe_max_ms
+    label: Maximale Böen
+    einheit: m/s
+    wert: 12
+    min: 2
+    max: 35
+    step: 0.5
+    status: Annahme
+    quelle: Vorsichtiger Planungswert, Herstellerangabe prüfen
+  - key: wetter.regen_max_mm
+    label: Maximaler Niederschlag am Flugtag
+    einheit: mm
+    wert: 1.0
+    min: 0
+    max: 20
+    step: 0.5
+    status: Annahme
+    quelle: Schutzklasse der Drohne prüfen
+  - key: wetter.temp_min_c
+    label: Mindesttemperatur
+    einheit: °C
+    wert: -5
+    min: -30
+    max: 15
+    step: 1
+    status: Annahme
+    quelle: Akkuleistung bei Kälte, Herstellerangabe prüfen
+- id: heli
+  titel: Helikopter
+  beschreibung: 'Vergleich: Außenlastflug mit Helikopter. Je Tag und Richtung ein Einsatz.'
+  parameter:
+  - key: heli.eur_min
+    label: Preis je Flugminute
+    einheit: €/min
+    wert: 30
+    min: 0
+    max: 200
+    step: 1
+    status: Annahme
+    quelle: Teamdiskussion, Bandbreite 25 bis 35 €/min, nicht validiert
+  - key: heli.nutzlast_kg
+    label: Nutzlast je Rotation
+    einheit: kg
+    wert: 750
+    min: 100
+    max: 3000
+    step: 50
+    status: Annahme
+    quelle: Teamdiskussion, Bandbreite 750 bis 1.200 kg, nicht validiert
+  - key: heli.v_kmh
+    label: Transfergeschwindigkeit Basis → Einsatzort
+    einheit: km/h
+    wert: 180
+    min: 50
+    max: 300
+    step: 10
+    status: Annahme
+    quelle: Größenordnung einmotoriger Arbeitshubschrauber, Typ offen
+    kommentar: Anflug wird aus der Luftlinie zur Basis berechnet
+  - key: heli.mindest_min
+    label: Mindestabrechnung je Einsatz
+    einheit: min
+    wert: 30
+    min: 0
+    max: 300
+    step: 5
+    status: Annahme
+    quelle: Platzhalter, beim Anbieter erfragen
+  - key: heli.bereitstellung_eur
+    label: Bereitstellung je Einsatz
+    einheit: €
+    wert: 0
+    min: 0
+    max: 5000
+    step: 10
+    status: Annahme
+    quelle: Platzhalter, beim Anbieter erfragen
+  - key: heli.rotation_min
+    label: Dauer je Rotation
+    einheit: min
+    wert: 6
+    min: 1
+    max: 60
+    step: 1
+    status: Annahme
+    quelle: Schätzung inkl. Ein- und Aushängen
+  - key: heli.kerosin_l_h
+    label: Kerosinverbrauch
+    einheit: l/h
+    wert: 170
+    min: 0
+    max: 1000
+    step: 10
+    status: Annahme
+    quelle: Größenordnung einmotoriger Arbeitshubschrauber, Typ offen
+- id: manuell
+  titel: Manueller Transport
+  beschreibung: Tragen durch das Team als Vergleichsverfahren.
+  parameter:
+  - key: manuell.traglast_kg
+    label: Traglast je Person
+    einheit: kg
+    wert: 20
+    min: 5
+    max: 50
+    step: 1
+    status: Annahme
+    quelle: Planungswert für steiles Gelände, ergonomisch prüfen
+  - key: manuell.v_horizontal_kmh
+    label: Gehgeschwindigkeit horizontal
+    einheit: km/h
+    wert: 4
+    min: 1
+    max: 8
+    step: 0.5
+    status: Literaturwert
+    quelle: DIN 33466 Wanderzeitberechnung (4 km/h)
+  - key: manuell.aufstieg_hm_h
+    label: Aufstieg
+    einheit: Hm/h
+    wert: 300
+    min: 50
+    max: 1000
+    step: 10
+    status: Literaturwert
+    quelle: DIN 33466 Wanderzeitberechnung (300 Hm/h)
+  - key: manuell.abstieg_hm_h
+    label: Abstieg
+    einheit: Hm/h
+    wert: 500
+    min: 50
+    max: 2000
+    step: 10
+    status: Literaturwert
+    quelle: DIN 33466 Wanderzeitberechnung (500 Hm/h)
+  - key: manuell.lastfaktor
+    label: Zeitaufschlag beim Tragen mit Last
+    einheit: ×
+    wert: 1.3
+    min: 1
+    max: 3
+    step: 0.05
+    status: Annahme
+    quelle: DIN-Werte gelten ohne schwere Last; Aufschlag mit Felddaten Montafon validieren
+    kommentar: Gilt nur für den Weg mit Last
+  - key: manuell.stundensatz_eur_h
+    label: Stundensatz Arbeitskraft
+    einheit: €/h
+    wert: 35
+    min: 0
+    max: 200
+    step: 1
+    status: Annahme
+    quelle: Platzhalter, regionale Lohnkosten prüfen
+- id: co2
+  titel: CO₂-Faktoren
+  beschreibung: Emissionsfaktoren für den Vergleich.
+  parameter:
+  - key: co2.strom_kg_kwh
+    label: Strommix
+    einheit: kg CO₂/kWh
+    wert: 0.1
+    min: 0
+    max: 1.5
+    step: 0.01
+    status: Annahme
+    quelle: Niedriger Faktor für österreichischen Strommix, Quelle ergänzen
+  - key: co2.kerosin_kg_l
+    label: Kerosin
+    einheit: kg CO₂/l
+    wert: 2.52
+    min: 0
+    max: 5
+    step: 0.01
+    status: Literaturwert
+    quelle: 3,16 kg CO₂ je kg Jet-A1 × Dichte ca. 0,8 kg/l

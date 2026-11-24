@@ -1,0 +1,5 @@
+id,name,einsatz,start_name,start_lat,start_lon,ziel_lat,ziel_lon,vorlage,kommentar
+forst_st_gallenkirch,"Forstwirtschaft (St. Gallenkirch)",Holzernte St. Gallenkirch,Landeplatz Forst,47.031639,9.991611,47.029139,9.996583,S1,Standardpunkte Team
+lawinenverbauung,Lawinenverbauung,Lawinenverbauung,Landeplatz Lawinenverbauung,47.026639,9.930222,47.025778,9.924139,S4,Standardpunkte Team
+heuernte_bartholomaeberg,"Heuernte (Bartholomäberg)",Heuernte Bartholomäberg,Landeplatz Heuernte,47.105972,9.912667,47.110472,9.914778,S5,"Standardpunkte Team. Vorlage S5 (Freischneider, Laubbläser) als Startpunkt, Heusäcke als freie Positionen ergänzen"
+kristberg,Beispiel Kristberg (Silbertal),Hangpflege Kristberg,Landeplatz Silbertal,47.0937,9.9831,47.1000,9.9833,S1,Beispiel aus dem Lift Planner

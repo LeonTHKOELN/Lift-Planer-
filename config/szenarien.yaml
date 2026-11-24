@@ -1,0 +1,39 @@
+# ---------------------------------------------------------------------------
+# Szenarien = benannte Abweichungen von den Basiswerten in parameter.yaml.
+# Nicht aufgeführte Parameter behalten ihren Basiswert.
+#
+# Lesart:  konservativ = ungünstige Annahmen für die Drohne
+#          optimistisch = günstige Annahmen für die Drohne
+# Alle Werte sind Szenarioannahmen, keine Prognosen.
+# ---------------------------------------------------------------------------
+
+szenarien:
+
+  - id: basis
+    name: Basis
+    beschreibung: Basiswerte aus parameter.yaml
+    werte: {}
+
+  - id: konservativ
+    name: Konservativ
+    beschreibung: Langsamere Drohne, längere Bodenzeiten, höhere Betriebskosten, günstiger Helikopter
+    werte:
+      drohne.v_reise_ms: 8
+      drohne.steigrate_ms: 2.5
+      flug.umlauf_min: 4
+      flug.lastwechsel_min: 4
+      einsatz.aufbau_min: 60
+      betrieb.abschreibung_eur_tag: 220
+      betrieb.wartung_eur_fh: 60
+      heli.eur_min: 25
+
+  - id: optimistisch
+    name: Optimistisch
+    beschreibung: Eingespieltes Team, hohe Auslastung der Drohne über das Jahr
+    werte:
+      flug.umlauf_min: 2
+      flug.lastwechsel_min: 2
+      einsatz.aufbau_min: 30
+      einsatz.abbau_min: 20
+      betrieb.abschreibung_eur_tag: 100
+      heli.eur_min: 35

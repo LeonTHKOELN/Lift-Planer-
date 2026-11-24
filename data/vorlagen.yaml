@@ -1,0 +1,191 @@
+# Vorlagen = Tagesladungen aus "Transportbox_Sprint5-6_v4.xlsx", Blatt Transportszenarien.
+# Ein Trupp mit 2 Personen. Artikel-IDs verweisen auf data/katalog.csv.
+
+vorlagen:
+- id: S1
+  name: S1 · Forst – Holzernte am Steilhang (Benzin)
+  positionen:
+  - artikel: faellsaege_ms_462_c_m
+    menge: 1
+    bemerkung: fliegt betankt; lagerichtig fixieren (Tankdeckel oben)
+  - artikel: motorsaege_ms_261_c_m
+    menge: 1
+    bemerkung: fliegt betankt; lagerichtig fixieren (Tankdeckel oben)
+  - artikel: gemisch_motomix_im_kombi_kanister_l
+    menge: 10
+    bemerkung: 2 Kombi-Kanister à 5 l
+  - artikel: kettenoel_bioplus
+    menge: 6
+    bemerkung: 2 Kombi-Kanister à 3 l
+  - artikel: kombi_kanister_stihl_5_l_3_l_leer
+    menge: 2
+    bemerkung: ''
+  - artikel: faellheber_76_cm
+    menge: 1
+    bemerkung: ''
+  - artikel: faellkeile_kunststoff_250_mm
+    menge: 4
+    bemerkung: Vergleichsprodukt (kein STIHL)
+  - artikel: spaltaxt_ax_20_pc
+    menge: 1
+    bemerkung: 'Schätzung: Kopf 1,95 kg lt. STIHL + ca. 0,5 kg Stiel 75 cm'
+  - artikel: ersatzkette_ms_261
+    menge: 1
+    bemerkung: ''
+  - artikel: ersatzkette_ms_462
+    menge: 1
+    bemerkung: 'Schätzung: länger und gröber als 40-cm-Kette'
+  - artikel: stihl_schaerfset
+    menge: 1
+    bemerkung: ''
+  - artikel: rundfeilen_zusaetzlich
+    menge: 2
+    bemerkung: 'Schätzung: Stahl Ø 4,8 × 200 mm ≈ 30 g'
+  - artikel: erste_hilfe_set
+    menge: 1
+    bemerkung: 'Schätzung: Verbandtaschen 0,17–0,39 kg, Zuschlag für Rettungsdecke'
+  - artikel: wasser_und_verpflegung
+    menge: 2
+    bemerkung: je Person
+- id: S2
+  name: S2 · Forst – Holzernte mit Akku-Sägen
+  positionen:
+  - artikel: akku_motorsaege_msa_300
+    menge: 2
+    bemerkung: ''
+  - artikel: schneidgarnitur
+    menge: 2
+    bemerkung: 'Schätzung: MS 261 System − Motoreinheit = 0,9 kg, 40-cm-Schiene ca. 0,1 kg leichter'
+  - artikel: akku_ap_300_0_pc
+    menge: 6
+    bemerkung: 'Ersatzakkus = UN 3480: max. 30 % Ladung (Q33), nicht mit Kl. 3 in einer Box; 3 je Säge'
+  - artikel: powerstation_stihl_ps_3000
+    menge: 1
+    bemerkung: '420 × 210 × 420 mm: passt nur stehend, Innenhöhe ≥ 420 mm (Wanne + 2 Ringe). Einstufung bei STIHL klären; bei 30 % Ladung nur
+      ca. 620 Wh ≈ 1–2 Akkuladungen'
+  - artikel: ladegeraet_al_301
+    menge: 1
+    bemerkung: AP-Akkus laden nur über Ladegerät an der 230-V-Steckdose der PS 3000
+  - artikel: kettenoel_bioplus
+    menge: 2
+    bemerkung: ''
+  - artikel: faellheber_76_cm
+    menge: 1
+    bemerkung: ''
+  - artikel: faellkeile_kunststoff_250_mm
+    menge: 4
+    bemerkung: Vergleichsprodukt (kein STIHL)
+  - artikel: ersatzkette
+    menge: 2
+    bemerkung: 'Schätzung: wie .325"-Kette 40 cm'
+  - artikel: stihl_schaerfset
+    menge: 1
+    bemerkung: ''
+  - artikel: rundfeilen_zusaetzlich
+    menge: 2
+    bemerkung: 'Schätzung: Stahl Ø 4,8 × 200 mm ≈ 30 g'
+  - artikel: erste_hilfe_set
+    menge: 1
+    bemerkung: 'Schätzung: Verbandtaschen 0,17–0,39 kg, Zuschlag für Rettungsdecke'
+  - artikel: wasser_und_verpflegung
+    menge: 2
+    bemerkung: je Person
+- id: S3
+  name: S3 · Alm / Schutzwaldpflege – Freischneiden
+  positionen:
+  - artikel: freischneider_fs_461_c_em
+    menge: 2
+    bemerkung: Langgut-Lösung nötig
+  - artikel: motorsaege_ms_261_c_m
+    menge: 1
+    bemerkung: für Stockausschlag und Astung
+  - artikel: gemisch_motomix_im_kombi_kanister_l
+    menge: 10
+    bemerkung: 2 Kombi-Kanister à 5 l
+  - artikel: kettenoel_bioplus
+    menge: 3
+    bemerkung: ''
+  - artikel: kombi_kanister_stihl_5_l_3_l_leer
+    menge: 2
+    bemerkung: ''
+  - artikel: ersatz_schneidwerkzeug
+    menge: 2
+    bemerkung: 'Schätzung: Stahlscheibe Ø 225 × ca. 1,5 mm'
+  - artikel: stihl_schaerfset
+    menge: 1
+    bemerkung: ''
+  - artikel: erste_hilfe_set
+    menge: 1
+    bemerkung: 'Schätzung: Verbandtaschen 0,17–0,39 kg, Zuschlag für Rettungsdecke'
+  - artikel: wasser_und_verpflegung
+    menge: 2
+    bemerkung: je Person
+- id: S4
+  name: S4 · Lawinenschutz / Verbauung – Erdbohren, Holz zuschneiden, Stahl trennen
+  positionen:
+  - artikel: erdbohrgeraet_bt_131
+    menge: 1
+    bemerkung: Länge messen
+  - artikel: bohrschnecke_150_695_mm
+    menge: 1
+    bemerkung: Schätzung 3–4 kg; kein Herstellerwert – unsicherste Position, wiegen
+  - artikel: akku_trennschleifer_tsa_230
+    menge: 1
+    bemerkung: Trennen von Stahl/Ankern; Alternative TSA 300 (110 mm Schnitttiefe) – Gewicht nicht gesichert
+  - artikel: akku_ap_300_im_geraet
+    menge: 1
+    bemerkung: 'Ersatzakkus (UN 3480) NICHT in diese Box: Benzin (Kl. 3) an Bord'
+  - artikel: motorsaege_ms_261_c_m
+    menge: 1
+    bemerkung: Zuschnitt Verbauholz
+  - artikel: gemisch_motomix_im_kombi_kanister_l
+    menge: 10
+    bemerkung: 2 Kombi-Kanister à 5 l
+  - artikel: kettenoel_bioplus
+    menge: 3
+    bemerkung: ''
+  - artikel: kombi_kanister_stihl_5_l_3_l_leer
+    menge: 2
+    bemerkung: ''
+  - artikel: spaltaxt_ax_20_pc
+    menge: 1
+    bemerkung: 'Schätzung: Kopf 1,95 kg lt. STIHL + ca. 0,5 kg Stiel 75 cm'
+  - artikel: stihl_schaerfset
+    menge: 1
+    bemerkung: ''
+  - artikel: erste_hilfe_set
+    menge: 1
+    bemerkung: 'Schätzung: Verbandtaschen 0,17–0,39 kg, Zuschlag für Rettungsdecke'
+  - artikel: wasser_und_verpflegung
+    menge: 2
+    bemerkung: je Person
+- id: S5
+  name: S5 · Grünpflege / Almflächen – Rückengeräte (Benzin)
+  positionen:
+  - artikel: rueckentragbarer_laubblaeser_br_800_c_e
+    menge: 1
+    bemerkung: Rückeneinheit 565 × 565 × 380 mm (H × B × T), mit Rohr 1.490 mm; Blasrohr abnehmbar? → Köcher
+  - artikel: kraftstoff_im_tank_br_800_l
+    menge: 2
+    bemerkung: Tank 2 l, voll betankt
+  - artikel: rueckentragbarer_freischneider_fr_410_c_
+    menge: 1
+    bemerkung: Rückeneinheit 565 × 265 × 500 mm, Länge 1.900 mm [Q52]; Händlerangabe 2.800 mm [Q38] – Messweise mit STIHL klären
+  - artikel: kraftstoff_im_tank_fr_410_l
+    menge: 0.75
+    bemerkung: Tank 0,75 l
+  - artikel: gemisch_motomix_im_kombi_kanister_l
+    menge: 5
+    bemerkung: 1 Kombi-Kanister
+  - artikel: kombi_kanister_stihl_5_l_3_l_leer
+    menge: 1
+    bemerkung: ''
+  - artikel: schneidwerkzeug_und_schutz_fr_410
+    menge: 1
+    bemerkung: 'Schätzung: Mähmesser + Schutzhaube; kein Herstellerwert'
+  - artikel: erste_hilfe_set
+    menge: 1
+    bemerkung: 'Schätzung: Verbandtaschen 0,17–0,39 kg, Zuschlag für Rettungsdecke'
+  - artikel: wasser_und_verpflegung
+    menge: 2
+    bemerkung: je Person

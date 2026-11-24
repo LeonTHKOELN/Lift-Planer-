@@ -1,0 +1,32 @@
+id,kategorie,name,einheit,gewicht_kg,gefahrgut,gefahrgut_text,laenge_mm,energie_wh,quelle,hinweis
+faellsaege_ms_462_c_m,Geräte,Fällsäge MS 462 C-M (Systemgewicht),Stk,7.3,3,"UN 3528, Kl. 3 – Gefahrgut (betankt)",,,Q26,fliegt betankt; lagerichtig fixieren (Tankdeckel oben)
+motorsaege_ms_261_c_m,Geräte,Motorsäge MS 261 C-M (Systemgewicht),Stk,5.8,3,"UN 3528, Kl. 3 – Gefahrgut (betankt)",,,Q10,fliegt betankt; lagerichtig fixieren (Tankdeckel oben)
+akku_motorsaege_msa_300,Geräte,Akku-Motorsäge MSA 300 (ohne Akku/Garnitur),Stk,4.5,,,,,Q11,
+freischneider_fs_461_c_em,Geräte,Freischneider FS 461 C-EM,Stk,8.7,3,"UN 3528, Kl. 3 – Gefahrgut (betankt)",1851,,Q12,Langgut-Lösung nötig
+erdbohrgeraet_bt_131,Geräte,Erdbohrgerät BT 131,Stk,10,3,"UN 3528, Kl. 3 – Gefahrgut (betankt)",,,Q13,Länge messen
+akku_trennschleifer_tsa_230,Geräte,Akku-Trennschleifer TSA 230 (ohne Akku),Stk,3.9,,,,,Q39,Trennen von Stahl/Ankern; Alternative TSA 300 (110 mm Schnitttiefe) – Gewicht nicht gesichert
+rueckentragbarer_laubblaeser_br_800_c_e,Geräte,Rückentragbarer Laubbläser BR 800 C-E,Stk,11.7,3,"UN 3528, Kl. 3 – Gefahrgut (betankt)",1490,,"Q36, Q52","Rückeneinheit 565 × 565 × 380 mm (H × B × T), mit Rohr 1.490 mm; Blasrohr abnehmbar? → Köcher"
+rueckentragbarer_freischneider_fr_410_c_,Geräte,Rückentragbarer Freischneider FR 410 C-E,Stk,10.8,3,"UN 3528, Kl. 3 – Gefahrgut (betankt)",1900,,"Q37, Q52","Rückeneinheit 565 × 265 × 500 mm, Länge 1.900 mm [Q52]; Händlerangabe 2.800 mm [Q38] – Messweise mit STIHL klären"
+akku_ap_300_0_pc,Akkus und Energie,Akku AP 300.0 PC,Stk,1.9,9L,"UN 3480, Kl. 9 – Gefahrgut",,333,Q8,"Ersatzakkus = UN 3480: max. 30 % Ladung (Q33), nicht mit Kl. 3 in einer Box; 3 je Säge"
+powerstation_stihl_ps_3000,Akkus und Energie,Powerstation STIHL PS 3000 (Akkus am Berg laden),Stk,19.8,9L,"UN 3480 (vermutlich), Kl. 9 – Gefahrgut",420,2074,Q47,"420 × 210 × 420 mm: passt nur stehend, Innenhöhe ≥ 420 mm (Wanne + 2 Ringe). Einstufung bei STIHL klären; bei 30 % Ladung nur ca. 620 Wh ≈ 1–2 Akkuladungen"
+ladegeraet_al_301,Akkus und Energie,Ladegerät AL 301 (für PS 3000),Stk,1.1,,,,,Q48,AP-Akkus laden nur über Ladegerät an der 230-V-Steckdose der PS 3000
+akku_ap_300_im_geraet,Akkus und Energie,"Akku AP 300.0 PC, im Trennschleifer eingesetzt",Stk,1.9,9G,UN 3481 im Gerät – Gefahrgut (30 % empfohlen),,333,"Q8, Q33",Ersatzakkus (UN 3480) NICHT in diese Box: Benzin (Kl. 3) an Bord
+gemisch_motomix_im_kombi_kanister_l,Betriebsstoffe,Gemisch MotoMix im Kombi-Kanister,l,0.69,3,"UN 1203, Kl. 3 – Gefahrgut",,,"Q14, Q25",2 Kombi-Kanister à 5 l
+kettenoel_bioplus,Betriebsstoffe,Kettenöl BioPlus,l,0.92,,kein Gefahrgut (SDB),,,"Q14, Q16",2 Kombi-Kanister à 3 l
+kombi_kanister_stihl_5_l_3_l_leer,Betriebsstoffe,"Kombi-Kanister STIHL 5 l + 3 l, leer",Stk,0.57,,,,,Q41,
+kraftstoff_im_tank_br_800_l,Betriebsstoffe,Kraftstoff im Tank BR 800,l,0.69,3,UN 3528 – Gefahrgut (Tankinhalt),,,"Q25, Q36","Tank 2 l, voll betankt"
+kraftstoff_im_tank_fr_410_l,Betriebsstoffe,Kraftstoff im Tank FR 410,l,0.69,3,UN 3528 – Gefahrgut (Tankinhalt),,,"Q25, Q38","Tank 0,75 l"
+faellheber_76_cm,Werkzeug und Zubehör,Fällheber 76 cm,Stk,1.8,,,,,Q27,
+faellkeile_kunststoff_250_mm,Werkzeug und Zubehör,Fällkeile Kunststoff 250 mm,Stk,0.35,,,,,Q29,Vergleichsprodukt (kein STIHL)
+spaltaxt_ax_20_pc,Werkzeug und Zubehör,"Spaltaxt AX 20 PC (Kopf 1,95 kg + Stiel)",Stk,2.5,,,,,Schätzung (Q28),"Schätzung: Kopf 1,95 kg lt. STIHL + ca. 0,5 kg Stiel 75 cm"
+ersatzkette_ms_261,Werkzeug und Zubehör,"Ersatzkette MS 261 (40 cm, .325"")",Stk,0.23,,,,,Q45,
+ersatzkette_ms_462,Werkzeug und Zubehör,Ersatzkette MS 462 (längere Schiene),Stk,0.3,,,,,Schätzung,Schätzung: länger und gröber als 40-cm-Kette
+stihl_schaerfset,Werkzeug und Zubehör,"STIHL-Schärfset (Feilenhalter mit Rundfeile, Flachfeile, Feillehre, Tasche)",Stk,0.69,,,,,Q44,
+rundfeilen_zusaetzlich,Werkzeug und Zubehör,Rundfeilen zusätzlich,Stk,0.03,,,,,Schätzung,"Schätzung: Stahl Ø 4,8 × 200 mm ≈ 30 g"
+schneidgarnitur,Werkzeug und Zubehör,Schneidgarnitur (Schiene + Kette),Stk,0.85,,,,,Schätzung (Q10),"Schätzung: MS 261 System − Motoreinheit = 0,9 kg, 40-cm-Schiene ca. 0,1 kg leichter"
+ersatzkette,Werkzeug und Zubehör,Ersatzkette (40 cm),Stk,0.23,,,,,Schätzung (Q45),"Schätzung: wie .325""-Kette 40 cm"
+ersatz_schneidwerkzeug,Werkzeug und Zubehör,Ersatz-Schneidwerkzeug (Kreissägeblatt 225 mm),Stk,0.4,,,,,Schätzung,"Schätzung: Stahlscheibe Ø 225 × ca. 1,5 mm"
+bohrschnecke_150_695_mm,Werkzeug und Zubehör,Bohrschnecke Ø 150 × 695 mm,Stk,3.5,,,,,Schätzung,"Schätzung 3–4 kg; kein Herstellerwert – unsicherste Position, wiegen"
+schneidwerkzeug_und_schutz_fr_410,Werkzeug und Zubehör,Schneidwerkzeug und Schutz FR 410,Stk,0.8,,,,,Schätzung,Schätzung: Mähmesser + Schutzhaube; kein Herstellerwert
+erste_hilfe_set,Sicherheit und Verpflegung,Erste-Hilfe-Set (Verbandtasche),Stk,0.5,,,,,"Schätzung (Q42, Q43)","Schätzung: Verbandtaschen 0,17–0,39 kg, Zuschlag für Rettungsdecke"
+wasser_und_verpflegung,Sicherheit und Verpflegung,Wasser und Verpflegung,Stk,3,,,,,Annahme,je Person
