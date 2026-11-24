@@ -42,7 +42,7 @@ STANDORT_DATEI = katalog.DATA / "standorte.csv"
 
 def _stand(*pfade):
     """Änderungszeitpunkt der Dateien: neuer Stand im Repo → Zwischenspeicher wird neu befüllt."""
-    return tuple(pf.stat().st_mtime_ns for pf in pfade)
+    return tuple(pf.stat().st_mtime_ns if pf.exists() else 0 for pf in pfade)
 
 
 @st.cache_resource
